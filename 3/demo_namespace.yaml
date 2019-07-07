@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: demo
+  labels:
+    istio-injection: enabled
+
+---
+
+apiVersion: networking.istio.io/v1alpha3
+kind: Sidecar
+metadata:
+  name: default
+  namespace: demo
+spec:
+  egress:
+  - hosts:
+    - "demo/*"
+    - "istio-system/istio-pilot.istio-system.svc.cluster.local"

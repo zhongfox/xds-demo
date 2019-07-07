@@ -1,0 +1,2734 @@
+{
+ "configs": [
+  {
+   "@type": "type.googleapis.com/envoy.admin.v2alpha.BootstrapConfigDump",
+   "bootstrap": {
+    "node": {
+     "id": "sidecar~172.21.0.25~order-v1-746cd96696-7wggz.demo~demo.svc.cluster.local",
+     "cluster": "order.demo",
+     "metadata": {
+      "INCLUDE_INBOUND_PORTS": "7777,4444",
+      "app": "order",
+      "pod-template-hash": "746cd96696",
+      "INTERCEPTION_MODE": "REDIRECT",
+      "version": "v1",
+      "CONFIG_NAMESPACE": "demo",
+      "ISTIO_VERSION": "release-1.2-20190704-09-16",
+      "ISTIO_META_INSTANCE_IPS": "172.21.0.25,172.21.0.25",
+      "POD_NAME": "order-v1-746cd96696-7wggz",
+      "istio": "sidecar",
+      "ISTIO_PROXY_VERSION": "1.1.3",
+      "ISTIO_PROXY_SHA": "istio-proxy:a975561b980463f08689d3debe33bb9eefc80c3d"
+     },
+     "locality": {},
+     "build_version": "a975561b980463f08689d3debe33bb9eefc80c3d/1.11.0-dev/Clean/RELEASE/BoringSSL"
+    },
+    "static_resources": {
+     "listeners": [
+      {
+       "address": {
+        "socket_address": {
+         "address": "0.0.0.0",
+         "port_value": 15090
+        }
+       },
+       "filter_chains": [
+        {
+         "filters": [
+          {
+           "name": "envoy.http_connection_manager",
+           "config": {
+            "route_config": {
+             "virtual_hosts": [
+              {
+               "routes": [
+                {
+                 "route": {
+                  "cluster": "prometheus_stats"
+                 },
+                 "match": {
+                  "prefix": "/stats/prometheus"
+                 }
+                }
+               ],
+               "domains": [
+                "*"
+               ],
+               "name": "backend"
+              }
+             ]
+            },
+            "codec_type": "AUTO",
+            "http_filters": {
+             "name": "envoy.router"
+            },
+            "stat_prefix": "stats"
+           }
+          }
+         ]
+        }
+       ]
+      }
+     ],
+     "clusters": [
+      {
+       "name": "prometheus_stats",
+       "type": "STATIC",
+       "connect_timeout": "0.250s",
+       "hosts": [
+        {
+         "socket_address": {
+          "address": "127.0.0.1",
+          "port_value": 15000
+         }
+        }
+       ]
+      },
+      {
+       "name": "xds-grpc",
+       "type": "STRICT_DNS",
+       "connect_timeout": "10s",
+       "hosts": [
+        {
+         "socket_address": {
+          "address": "istio-pilot.istio-system",
+          "port_value": 15010
+         }
+        }
+       ],
+       "circuit_breakers": {
+        "thresholds": [
+         {
+          "max_connections": 100000,
+          "max_pending_requests": 100000,
+          "max_requests": 100000
+         },
+         {
+          "priority": "HIGH",
+          "max_connections": 100000,
+          "max_pending_requests": 100000,
+          "max_requests": 100000
+         }
+        ]
+       },
+       "http2_protocol_options": {},
+       "dns_refresh_rate": "300s",
+       "dns_lookup_family": "V4_ONLY",
+       "upstream_connection_options": {
+        "tcp_keepalive": {
+         "keepalive_time": 300
+        }
+       }
+      },
+      {
+       "name": "zipkin",
+       "type": "STRICT_DNS",
+       "connect_timeout": "1s",
+       "hosts": [
+        {
+         "socket_address": {
+          "address": "zipkin.istio-system",
+          "port_value": 9411
+         }
+        }
+       ],
+       "dns_refresh_rate": "300s",
+       "dns_lookup_family": "V4_ONLY"
+      }
+     ]
+    },
+    "dynamic_resources": {
+     "lds_config": {
+      "ads": {}
+     },
+     "cds_config": {
+      "ads": {}
+     },
+     "ads_config": {
+      "api_type": "GRPC",
+      "grpc_services": [
+       {
+        "envoy_grpc": {
+         "cluster_name": "xds-grpc"
+        }
+       }
+      ]
+     }
+    },
+    "tracing": {
+     "http": {
+      "name": "envoy.zipkin",
+      "config": {
+       "collector_endpoint": "/api/v1/spans",
+       "collector_cluster": "zipkin",
+       "trace_id_128bit": "true",
+       "shared_span_context": "false"
+      }
+     }
+    },
+    "admin": {
+     "access_log_path": "/dev/null",
+     "address": {
+      "socket_address": {
+       "address": "127.0.0.1",
+       "port_value": 15000
+      }
+     }
+    },
+    "stats_config": {
+     "stats_tags": [
+      {
+       "tag_name": "cluster_name",
+       "regex": "^cluster\\.((.+?(\\..+?\\.svc\\.cluster\\.local)?)\\.)"
+      },
+      {
+       "tag_name": "tcp_prefix",
+       "regex": "^tcp\\.((.*?)\\.)\\w+?$"
+      },
+      {
+       "tag_name": "response_code",
+       "regex": "_rq(_(\\d{3}))$"
+      },
+      {
+       "tag_name": "response_code_class",
+       "regex": "_rq(_(\\dxx))$"
+      },
+      {
+       "tag_name": "http_conn_manager_listener_prefix",
+       "regex": "^listener(?=\\.).*?\\.http\\.(((?:[_.[:digit:]]*|[_\\[\\]aAbBcCdDeEfF[:digit:]]*))\\.)"
+      },
+      {
+       "tag_name": "http_conn_manager_prefix",
+       "regex": "^http\\.(((?:[_.[:digit:]]*|[_\\[\\]aAbBcCdDeEfF[:digit:]]*))\\.)"
+      },
+      {
+       "tag_name": "listener_address",
+       "regex": "^listener\\.(((?:[_.[:digit:]]*|[_\\[\\]aAbBcCdDeEfF[:digit:]]*))\\.)"
+      },
+      {
+       "tag_name": "mongo_prefix",
+       "regex": "^mongo\\.(.+?)\\.(collection|cmd|cx_|op_|delays_|decoding_)(.*?)$"
+      }
+     ],
+     "use_all_default_tags": false,
+     "stats_matcher": {
+      "inclusion_list": {
+       "patterns": [
+        {
+         "prefix": "cluster_manager"
+        },
+        {
+         "prefix": "listener_manager"
+        },
+        {
+         "prefix": "http_mixer_filter"
+        },
+        {
+         "prefix": "tcp_mixer_filter"
+        },
+        {
+         "prefix": "server"
+        },
+        {
+         "prefix": "cluster.xds-grpc"
+        }
+       ]
+      }
+     }
+    }
+   },
+   "last_updated": "2019-07-07T14:46:46.331Z"
+  },
+  {
+   "@type": "type.googleapis.com/envoy.admin.v2alpha.ClustersConfigDump",
+   "version_info": "2019-07-07T15:34:08Z/38",
+   "static_clusters": [
+    {
+     "cluster": {
+      "name": "prometheus_stats",
+      "type": "STATIC",
+      "connect_timeout": "0.250s",
+      "hosts": [
+       {
+        "socket_address": {
+         "address": "127.0.0.1",
+         "port_value": 15000
+        }
+       }
+      ]
+     },
+     "last_updated": "2019-07-07T14:46:46.332Z"
+    },
+    {
+     "cluster": {
+      "name": "xds-grpc",
+      "type": "STRICT_DNS",
+      "connect_timeout": "10s",
+      "hosts": [
+       {
+        "socket_address": {
+         "address": "istio-pilot.istio-system",
+         "port_value": 15010
+        }
+       }
+      ],
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_connections": 100000,
+         "max_pending_requests": 100000,
+         "max_requests": 100000
+        },
+        {
+         "priority": "HIGH",
+         "max_connections": 100000,
+         "max_pending_requests": 100000,
+         "max_requests": 100000
+        }
+       ]
+      },
+      "http2_protocol_options": {},
+      "dns_refresh_rate": "300s",
+      "dns_lookup_family": "V4_ONLY",
+      "upstream_connection_options": {
+       "tcp_keepalive": {
+        "keepalive_time": 300
+       }
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.332Z"
+    },
+    {
+     "cluster": {
+      "name": "zipkin",
+      "type": "STRICT_DNS",
+      "connect_timeout": "1s",
+      "hosts": [
+       {
+        "socket_address": {
+         "address": "zipkin.istio-system",
+         "port_value": 9411
+        }
+       }
+      ],
+      "dns_refresh_rate": "300s",
+      "dns_lookup_family": "V4_ONLY"
+     },
+     "last_updated": "2019-07-07T14:46:46.332Z"
+    }
+   ],
+   "dynamic_active_clusters": [
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "BlackHoleCluster",
+      "type": "STATIC",
+      "connect_timeout": "10s"
+     },
+     "last_updated": "2019-07-07T14:46:46.698Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "PassthroughCluster",
+      "type": "ORIGINAL_DST",
+      "connect_timeout": "10s",
+      "lb_policy": "ORIGINAL_DST_LB",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_connections": 102400,
+         "max_retries": 1024
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.698Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "inbound|15020|mgmt-15020|mgmtCluster",
+      "type": "STATIC",
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {}
+       ]
+      },
+      "load_assignment": {
+       "cluster_name": "inbound|15020|mgmt-15020|mgmtCluster",
+       "endpoints": [
+        {
+         "lb_endpoints": [
+          {
+           "endpoint": {
+            "address": {
+             "socket_address": {
+              "address": "127.0.0.1",
+              "port_value": 15020
+             }
+            }
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.698Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "inbound|4000|tcp-o|order.demo.svc.cluster.local",
+      "type": "STATIC",
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {}
+       ]
+      },
+      "load_assignment": {
+       "cluster_name": "inbound|4000|tcp-o|order.demo.svc.cluster.local",
+       "endpoints": [
+        {
+         "lb_endpoints": [
+          {
+           "endpoint": {
+            "address": {
+             "socket_address": {
+              "address": "127.0.0.1",
+              "port_value": 4444
+             }
+            }
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.698Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "inbound|7000|http-o|order.demo.svc.cluster.local",
+      "type": "STATIC",
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {}
+       ]
+      },
+      "load_assignment": {
+       "cluster_name": "inbound|7000|http-o|order.demo.svc.cluster.local",
+       "endpoints": [
+        {
+         "lb_endpoints": [
+          {
+           "endpoint": {
+            "address": {
+             "socket_address": {
+              "address": "127.0.0.1",
+              "port_value": 7777
+             }
+            }
+           }
+          }
+         ]
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.698Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "outbound|15010||istio-pilot.istio-system.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|15010||istio-pilot.istio-system.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      },
+      "http2_protocol_options": {
+       "max_concurrent_streams": 1073741824
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.696Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "outbound|15011||istio-pilot.istio-system.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|15011||istio-pilot.istio-system.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.697Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "outbound|15014||istio-pilot.istio-system.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|15014||istio-pilot.istio-system.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.697Z"
+    },
+    {
+     "version_info": "2019-07-07T15:34:08Z/38",
+     "cluster": {
+      "name": "outbound|4000|v1|order.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|4000|v1|order.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      },
+      "metadata": {
+       "filter_metadata": {
+        "istio": {
+         "config": "/apis/networking/v1alpha3/namespaces/demo/destination-rule/order"
+        }
+       }
+      }
+     },
+     "last_updated": "2019-07-07T15:34:08.032Z"
+    },
+    {
+     "version_info": "2019-07-07T15:34:08Z/38",
+     "cluster": {
+      "name": "outbound|4000|v2|order.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|4000|v2|order.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      },
+      "metadata": {
+       "filter_metadata": {
+        "istio": {
+         "config": "/apis/networking/v1alpha3/namespaces/demo/destination-rule/order"
+        }
+       }
+      }
+     },
+     "last_updated": "2019-07-07T15:34:08.032Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "outbound|4000||mall.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|4000||mall.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.697Z"
+    },
+    {
+     "version_info": "2019-07-07T15:34:08Z/38",
+     "cluster": {
+      "name": "outbound|4000||order.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|4000||order.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      },
+      "metadata": {
+       "filter_metadata": {
+        "istio": {
+         "config": "/apis/networking/v1alpha3/namespaces/demo/destination-rule/order"
+        }
+       }
+      }
+     },
+     "last_updated": "2019-07-07T15:34:08.032Z"
+    },
+    {
+     "version_info": "2019-07-07T15:34:08Z/38",
+     "cluster": {
+      "name": "outbound|7000|v1|order.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|7000|v1|order.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      },
+      "metadata": {
+       "filter_metadata": {
+        "istio": {
+         "config": "/apis/networking/v1alpha3/namespaces/demo/destination-rule/order"
+        }
+       }
+      }
+     },
+     "last_updated": "2019-07-07T15:34:08.031Z"
+    },
+    {
+     "version_info": "2019-07-07T15:34:08Z/38",
+     "cluster": {
+      "name": "outbound|7000|v2|order.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|7000|v2|order.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      },
+      "metadata": {
+       "filter_metadata": {
+        "istio": {
+         "config": "/apis/networking/v1alpha3/namespaces/demo/destination-rule/order"
+        }
+       }
+      }
+     },
+     "last_updated": "2019-07-07T15:34:08.031Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "outbound|7000||mall.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|7000||mall.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.697Z"
+    },
+    {
+     "version_info": "2019-07-07T15:34:08Z/38",
+     "cluster": {
+      "name": "outbound|7000||order.demo.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|7000||order.demo.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      },
+      "metadata": {
+       "filter_metadata": {
+        "istio": {
+         "config": "/apis/networking/v1alpha3/namespaces/demo/destination-rule/order"
+        }
+       }
+      }
+     },
+     "last_updated": "2019-07-07T15:34:08.031Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "cluster": {
+      "name": "outbound|8080||istio-pilot.istio-system.svc.cluster.local",
+      "type": "EDS",
+      "eds_cluster_config": {
+       "eds_config": {
+        "ads": {},
+        "initial_fetch_timeout": "0s"
+       },
+       "service_name": "outbound|8080||istio-pilot.istio-system.svc.cluster.local"
+      },
+      "connect_timeout": "10s",
+      "circuit_breakers": {
+       "thresholds": [
+        {
+         "max_retries": 1024
+        }
+       ]
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.697Z"
+    }
+   ]
+  },
+  {
+   "@type": "type.googleapis.com/envoy.admin.v2alpha.ListenersConfigDump",
+   "version_info": "2019-07-07T15:34:08Z/38",
+   "static_listeners": [
+    {
+     "listener": {
+      "address": {
+       "socket_address": {
+        "address": "0.0.0.0",
+        "port_value": 15090
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "envoy.http_connection_manager",
+          "config": {
+           "codec_type": "AUTO",
+           "http_filters": {
+            "name": "envoy.router"
+           },
+           "stat_prefix": "stats",
+           "route_config": {
+            "virtual_hosts": [
+             {
+              "routes": [
+               {
+                "match": {
+                 "prefix": "/stats/prometheus"
+                },
+                "route": {
+                 "cluster": "prometheus_stats"
+                }
+               }
+              ],
+              "domains": [
+               "*"
+              ],
+              "name": "backend"
+             }
+            ]
+           }
+          }
+         }
+        ]
+       }
+      ]
+     },
+     "last_updated": "2019-07-07T14:46:46.335Z"
+    }
+   ],
+   "dynamic_active_listeners": [
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "172.21.0.25_7777",
+      "address": {
+       "socket_address": {
+        "address": "172.21.0.25",
+        "port_value": 7777
+       }
+      },
+      "filter_chains": [
+       {
+        "filter_chain_match": {
+         "application_protocols": [
+          "istio"
+         ]
+        },
+        "tls_context": {
+         "common_tls_context": {
+          "tls_certificates": [
+           {
+            "certificate_chain": {
+             "filename": "/etc/certs/cert-chain.pem"
+            },
+            "private_key": {
+             "filename": "/etc/certs/key.pem"
+            }
+           }
+          ],
+          "validation_context": {
+           "trusted_ca": {
+            "filename": "/etc/certs/root-cert.pem"
+           }
+          },
+          "alpn_protocols": [
+           "h2",
+           "http/1.1"
+          ]
+         },
+         "require_client_certificate": true
+        },
+        "filters": [
+         {
+          "name": "envoy.http_connection_manager",
+          "config": {
+           "route_config": {
+            "name": "inbound|7000|http-o|order.demo.svc.cluster.local",
+            "validate_clusters": false,
+            "virtual_hosts": [
+             {
+              "routes": [
+               {
+                "decorator": {
+                 "operation": "order.demo.svc.cluster.local:7000/*"
+                },
+                "route": {
+                 "cluster": "inbound|7000|http-o|order.demo.svc.cluster.local",
+                 "timeout": "0s",
+                 "max_grpc_timeout": "0s"
+                },
+                "match": {
+                 "prefix": "/"
+                },
+                "per_filter_config": {
+                 "mixer": {
+                  "mixer_attributes": {
+                   "attributes": {
+                    "destination.service.host": {
+                     "string_value": "order.demo.svc.cluster.local"
+                    },
+                    "destination.service.uid": {
+                     "string_value": "istio://demo/services/order"
+                    },
+                    "destination.service.namespace": {
+                     "string_value": "demo"
+                    },
+                    "destination.service.name": {
+                     "string_value": "order"
+                    }
+                   }
+                  },
+                  "disable_check_calls": true
+                 }
+                }
+               }
+              ],
+              "domains": [
+               "*"
+              ],
+              "name": "inbound|http|7000"
+             }
+            ]
+           },
+           "generate_request_id": true,
+           "upgrade_configs": [
+            {
+             "upgrade_type": "websocket"
+            }
+           ],
+           "tracing": {
+            "random_sampling": {
+             "value": 1
+            },
+            "overall_sampling": {
+             "value": 100
+            },
+            "client_sampling": {
+             "value": 100
+            }
+           },
+           "stat_prefix": "172.21.0.25_7777",
+           "use_remote_address": false,
+           "set_current_client_cert_details": {
+            "dns": true,
+            "subject": true,
+            "uri": true
+           },
+           "stream_idle_timeout": "0s",
+           "forward_client_cert_details": "APPEND_FORWARD",
+           "access_log": [],
+           "server_name": "istio-envoy",
+           "http_filters": [
+            {
+             "name": "istio_authn",
+             "config": {
+              "policy": {
+               "peers": [
+                {
+                 "mtls": {
+                  "mode": "PERMISSIVE"
+                 }
+                }
+               ]
+              }
+             }
+            },
+            {
+             "name": "mixer",
+             "config": {
+              "mixer_attributes": {
+               "attributes": {
+                "context.reporter.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "destination.namespace": {
+                 "string_value": "demo"
+                },
+                "destination.ip": {
+                 "bytes_value": "AAAAAAAAAAAAAP//rBUAGQ=="
+                },
+                "destination.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "context.reporter.kind": {
+                 "string_value": "inbound"
+                },
+                "destination.port": {
+                 "int64_value": "7777"
+                }
+               }
+              },
+              "transport": {
+               "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+               "network_fail_policy": {
+                "max_retry_wait": "1s",
+                "base_retry_wait": "0.080s",
+                "policy": "FAIL_CLOSE"
+               },
+               "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+              },
+              "service_configs": {
+               "default": {
+                "disable_check_calls": true
+               }
+              },
+              "default_destination_service": "default"
+             }
+            },
+            {
+             "name": "envoy.cors"
+            },
+            {
+             "name": "envoy.fault"
+            },
+            {
+             "name": "envoy.router"
+            }
+           ],
+           "normalize_path": true
+          }
+         }
+        ]
+       },
+       {
+        "filter_chain_match": {},
+        "filters": [
+         {
+          "name": "envoy.http_connection_manager",
+          "config": {
+           "stat_prefix": "172.21.0.25_7777",
+           "use_remote_address": false,
+           "set_current_client_cert_details": {
+            "dns": true,
+            "subject": true,
+            "uri": true
+           },
+           "stream_idle_timeout": "0s",
+           "forward_client_cert_details": "APPEND_FORWARD",
+           "server_name": "istio-envoy",
+           "access_log": [],
+           "http_filters": [
+            {
+             "name": "istio_authn",
+             "config": {
+              "policy": {
+               "peers": [
+                {
+                 "mtls": {
+                  "mode": "PERMISSIVE"
+                 }
+                }
+               ]
+              }
+             }
+            },
+            {
+             "name": "mixer",
+             "config": {
+              "mixer_attributes": {
+               "attributes": {
+                "context.reporter.kind": {
+                 "string_value": "inbound"
+                },
+                "destination.port": {
+                 "int64_value": "7777"
+                },
+                "context.reporter.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "destination.namespace": {
+                 "string_value": "demo"
+                },
+                "destination.ip": {
+                 "bytes_value": "AAAAAAAAAAAAAP//rBUAGQ=="
+                },
+                "destination.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                }
+               }
+              },
+              "service_configs": {
+               "default": {
+                "disable_check_calls": true
+               }
+              },
+              "transport": {
+               "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+               "network_fail_policy": {
+                "policy": "FAIL_CLOSE",
+                "max_retry_wait": "1s",
+                "base_retry_wait": "0.080s"
+               },
+               "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+              },
+              "default_destination_service": "default"
+             }
+            },
+            {
+             "name": "envoy.cors"
+            },
+            {
+             "name": "envoy.fault"
+            },
+            {
+             "name": "envoy.router"
+            }
+           ],
+           "normalize_path": true,
+           "route_config": {
+            "validate_clusters": false,
+            "virtual_hosts": [
+             {
+              "routes": [
+               {
+                "decorator": {
+                 "operation": "order.demo.svc.cluster.local:7000/*"
+                },
+                "route": {
+                 "cluster": "inbound|7000|http-o|order.demo.svc.cluster.local",
+                 "timeout": "0s",
+                 "max_grpc_timeout": "0s"
+                },
+                "per_filter_config": {
+                 "mixer": {
+                  "mixer_attributes": {
+                   "attributes": {
+                    "destination.service.namespace": {
+                     "string_value": "demo"
+                    },
+                    "destination.service.name": {
+                     "string_value": "order"
+                    },
+                    "destination.service.uid": {
+                     "string_value": "istio://demo/services/order"
+                    },
+                    "destination.service.host": {
+                     "string_value": "order.demo.svc.cluster.local"
+                    }
+                   }
+                  },
+                  "disable_check_calls": true
+                 }
+                },
+                "match": {
+                 "prefix": "/"
+                }
+               }
+              ],
+              "domains": [
+               "*"
+              ],
+              "name": "inbound|http|7000"
+             }
+            ],
+            "name": "inbound|7000|http-o|order.demo.svc.cluster.local"
+           },
+           "generate_request_id": true,
+           "upgrade_configs": [
+            {
+             "upgrade_type": "websocket"
+            }
+           ],
+           "tracing": {
+            "overall_sampling": {
+             "value": 100
+            },
+            "random_sampling": {
+             "value": 1
+            },
+            "client_sampling": {
+             "value": 100
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      },
+      "listener_filters": [
+       {
+        "name": "envoy.listener.tls_inspector"
+       }
+      ]
+     },
+     "last_updated": "2019-07-07T14:46:46.717Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "172.21.0.25_4444",
+      "address": {
+       "socket_address": {
+        "address": "172.21.0.25",
+        "port_value": 4444
+       }
+      },
+      "filter_chains": [
+       {
+        "filter_chain_match": {
+         "application_protocols": [
+          "istio"
+         ]
+        },
+        "tls_context": {
+         "common_tls_context": {
+          "tls_certificates": [
+           {
+            "certificate_chain": {
+             "filename": "/etc/certs/cert-chain.pem"
+            },
+            "private_key": {
+             "filename": "/etc/certs/key.pem"
+            }
+           }
+          ],
+          "validation_context": {
+           "trusted_ca": {
+            "filename": "/etc/certs/root-cert.pem"
+           }
+          },
+          "alpn_protocols": [
+           "h2",
+           "http/1.1"
+          ]
+         },
+         "require_client_certificate": true
+        },
+        "filters": [
+         {
+          "name": "mixer",
+          "config": {
+           "transport": {
+            "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+            "network_fail_policy": {
+             "policy": "FAIL_CLOSE",
+             "max_retry_wait": "1s",
+             "base_retry_wait": "0.080s"
+            },
+            "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+           },
+           "disable_check_calls": true,
+           "mixer_attributes": {
+            "attributes": {
+             "context.reporter.kind": {
+              "string_value": "inbound"
+             },
+             "destination.port": {
+              "int64_value": "4444"
+             },
+             "context.reporter.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             },
+             "destination.namespace": {
+              "string_value": "demo"
+             },
+             "destination.ip": {
+              "bytes_value": "AAAAAAAAAAAAAP//rBUAGQ=="
+             },
+             "destination.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             }
+            }
+           }
+          }
+         },
+         {
+          "name": "envoy.tcp_proxy",
+          "config": {
+           "stat_prefix": "inbound|4000|tcp-o|order.demo.svc.cluster.local",
+           "cluster": "inbound|4000|tcp-o|order.demo.svc.cluster.local"
+          }
+         }
+        ]
+       },
+       {
+        "filter_chain_match": {},
+        "filters": [
+         {
+          "name": "mixer",
+          "config": {
+           "transport": {
+            "network_fail_policy": {
+             "policy": "FAIL_CLOSE",
+             "max_retry_wait": "1s",
+             "base_retry_wait": "0.080s"
+            },
+            "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local",
+            "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local"
+           },
+           "disable_check_calls": true,
+           "mixer_attributes": {
+            "attributes": {
+             "destination.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             },
+             "context.reporter.kind": {
+              "string_value": "inbound"
+             },
+             "destination.port": {
+              "int64_value": "4444"
+             },
+             "context.reporter.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             },
+             "destination.namespace": {
+              "string_value": "demo"
+             },
+             "destination.ip": {
+              "bytes_value": "AAAAAAAAAAAAAP//rBUAGQ=="
+             }
+            }
+           }
+          }
+         },
+         {
+          "name": "envoy.tcp_proxy",
+          "config": {
+           "stat_prefix": "inbound|4000|tcp-o|order.demo.svc.cluster.local",
+           "cluster": "inbound|4000|tcp-o|order.demo.svc.cluster.local"
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      },
+      "listener_filters": [
+       {
+        "name": "envoy.listener.tls_inspector"
+       }
+      ]
+     },
+     "last_updated": "2019-07-07T14:46:46.719Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "172.21.255.227_15011",
+      "address": {
+       "socket_address": {
+        "address": "172.21.255.227",
+        "port_value": 15011
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "mixer",
+          "config": {
+           "transport": {
+            "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+            "network_fail_policy": {
+             "max_retry_wait": "1s",
+             "base_retry_wait": "0.080s",
+             "policy": "FAIL_CLOSE"
+            },
+            "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+           },
+           "disable_check_calls": true,
+           "mixer_attributes": {
+            "attributes": {
+             "context.reporter.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             },
+             "source.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             },
+             "source.namespace": {
+              "string_value": "demo"
+             },
+             "destination.service.host": {
+              "string_value": "istio-pilot.istio-system.svc.cluster.local"
+             },
+             "destination.service.uid": {
+              "string_value": "istio://istio-system/services/istio-pilot"
+             },
+             "destination.service.namespace": {
+              "string_value": "istio-system"
+             },
+             "destination.service.name": {
+              "string_value": "istio-pilot"
+             },
+             "context.reporter.kind": {
+              "string_value": "outbound"
+             }
+            }
+           }
+          }
+         },
+         {
+          "name": "envoy.tcp_proxy",
+          "config": {
+           "stat_prefix": "outbound|15011||istio-pilot.istio-system.svc.cluster.local",
+           "cluster": "outbound|15011||istio-pilot.istio-system.svc.cluster.local"
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.720Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "172.21.255.162_4000",
+      "address": {
+       "socket_address": {
+        "address": "172.21.255.162",
+        "port_value": 4000
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "mixer",
+          "config": {
+           "transport": {
+            "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+            "network_fail_policy": {
+             "max_retry_wait": "1s",
+             "base_retry_wait": "0.080s",
+             "policy": "FAIL_CLOSE"
+            },
+            "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+           },
+           "disable_check_calls": true,
+           "mixer_attributes": {
+            "attributes": {
+             "source.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             },
+             "source.namespace": {
+              "string_value": "demo"
+             },
+             "destination.service.host": {
+              "string_value": "mall.demo.svc.cluster.local"
+             },
+             "destination.service.uid": {
+              "string_value": "istio://demo/services/mall"
+             },
+             "destination.service.name": {
+              "string_value": "mall"
+             },
+             "destination.service.namespace": {
+              "string_value": "demo"
+             },
+             "context.reporter.kind": {
+              "string_value": "outbound"
+             },
+             "context.reporter.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             }
+            }
+           }
+          }
+         },
+         {
+          "name": "envoy.tcp_proxy",
+          "config": {
+           "stat_prefix": "outbound|4000||mall.demo.svc.cluster.local",
+           "cluster": "outbound|4000||mall.demo.svc.cluster.local"
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.720Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "172.21.255.203_4000",
+      "address": {
+       "socket_address": {
+        "address": "172.21.255.203",
+        "port_value": 4000
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "mixer",
+          "config": {
+           "transport": {
+            "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+            "network_fail_policy": {
+             "max_retry_wait": "1s",
+             "base_retry_wait": "0.080s",
+             "policy": "FAIL_CLOSE"
+            },
+            "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+           },
+           "disable_check_calls": true,
+           "mixer_attributes": {
+            "attributes": {
+             "source.namespace": {
+              "string_value": "demo"
+             },
+             "destination.service.host": {
+              "string_value": "order.demo.svc.cluster.local"
+             },
+             "destination.service.uid": {
+              "string_value": "istio://demo/services/order"
+             },
+             "destination.service.namespace": {
+              "string_value": "demo"
+             },
+             "destination.service.name": {
+              "string_value": "order"
+             },
+             "context.reporter.kind": {
+              "string_value": "outbound"
+             },
+             "context.reporter.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             },
+             "source.uid": {
+              "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+             }
+            }
+           }
+          }
+         },
+         {
+          "name": "envoy.tcp_proxy",
+          "config": {
+           "stat_prefix": "outbound|4000||order.demo.svc.cluster.local",
+           "cluster": "outbound|4000||order.demo.svc.cluster.local"
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.720Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "0.0.0.0_8080",
+      "address": {
+       "socket_address": {
+        "address": "0.0.0.0",
+        "port_value": 8080
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "envoy.http_connection_manager",
+          "config": {
+           "use_remote_address": false,
+           "rds": {
+            "route_config_name": "8080",
+            "config_source": {
+             "ads": {},
+             "initial_fetch_timeout": "0s"
+            }
+           },
+           "stat_prefix": "0.0.0.0_8080",
+           "stream_idle_timeout": "0s",
+           "generate_request_id": true,
+           "upgrade_configs": [
+            {
+             "upgrade_type": "websocket"
+            }
+           ],
+           "access_log": [],
+           "http_filters": [
+            {
+             "name": "mixer",
+             "config": {
+              "transport": {
+               "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+               "network_fail_policy": {
+                "max_retry_wait": "1s",
+                "base_retry_wait": "0.080s",
+                "policy": "FAIL_CLOSE"
+               },
+               "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+              },
+              "service_configs": {
+               "default": {
+                "disable_check_calls": true
+               }
+              },
+              "default_destination_service": "default",
+              "mixer_attributes": {
+               "attributes": {
+                "source.namespace": {
+                 "string_value": "demo"
+                },
+                "context.reporter.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "context.reporter.kind": {
+                 "string_value": "outbound"
+                }
+               }
+              },
+              "forward_attributes": {
+               "attributes": {
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                }
+               }
+              }
+             }
+            },
+            {
+             "name": "envoy.cors"
+            },
+            {
+             "name": "envoy.fault"
+            },
+            {
+             "name": "envoy.router"
+            }
+           ],
+           "normalize_path": true,
+           "tracing": {
+            "overall_sampling": {
+             "value": 100
+            },
+            "random_sampling": {
+             "value": 1
+            },
+            "operation_name": "EGRESS",
+            "client_sampling": {
+             "value": 100
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.721Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "0.0.0.0_15014",
+      "address": {
+       "socket_address": {
+        "address": "0.0.0.0",
+        "port_value": 15014
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "envoy.http_connection_manager",
+          "config": {
+           "rds": {
+            "route_config_name": "15014",
+            "config_source": {
+             "ads": {},
+             "initial_fetch_timeout": "0s"
+            }
+           },
+           "stat_prefix": "0.0.0.0_15014",
+           "use_remote_address": false,
+           "stream_idle_timeout": "0s",
+           "generate_request_id": true,
+           "upgrade_configs": [
+            {
+             "upgrade_type": "websocket"
+            }
+           ],
+           "access_log": [],
+           "http_filters": [
+            {
+             "name": "mixer",
+             "config": {
+              "transport": {
+               "network_fail_policy": {
+                "base_retry_wait": "0.080s",
+                "policy": "FAIL_CLOSE",
+                "max_retry_wait": "1s"
+               },
+               "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local",
+               "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local"
+              },
+              "service_configs": {
+               "default": {
+                "disable_check_calls": true
+               }
+              },
+              "default_destination_service": "default",
+              "mixer_attributes": {
+               "attributes": {
+                "context.reporter.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "context.reporter.kind": {
+                 "string_value": "outbound"
+                },
+                "source.namespace": {
+                 "string_value": "demo"
+                }
+               }
+              },
+              "forward_attributes": {
+               "attributes": {
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                }
+               }
+              }
+             }
+            },
+            {
+             "name": "envoy.cors"
+            },
+            {
+             "name": "envoy.fault"
+            },
+            {
+             "name": "envoy.router"
+            }
+           ],
+           "normalize_path": true,
+           "tracing": {
+            "operation_name": "EGRESS",
+            "client_sampling": {
+             "value": 100
+            },
+            "overall_sampling": {
+             "value": 100
+            },
+            "random_sampling": {
+             "value": 1
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.722Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "0.0.0.0_7000",
+      "address": {
+       "socket_address": {
+        "address": "0.0.0.0",
+        "port_value": 7000
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "envoy.http_connection_manager",
+          "config": {
+           "access_log": [],
+           "http_filters": [
+            {
+             "name": "mixer",
+             "config": {
+              "transport": {
+               "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+               "network_fail_policy": {
+                "max_retry_wait": "1s",
+                "base_retry_wait": "0.080s",
+                "policy": "FAIL_CLOSE"
+               },
+               "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+              },
+              "service_configs": {
+               "default": {
+                "disable_check_calls": true
+               }
+              },
+              "default_destination_service": "default",
+              "mixer_attributes": {
+               "attributes": {
+                "source.namespace": {
+                 "string_value": "demo"
+                },
+                "context.reporter.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "context.reporter.kind": {
+                 "string_value": "outbound"
+                }
+               }
+              },
+              "forward_attributes": {
+               "attributes": {
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                }
+               }
+              }
+             }
+            },
+            {
+             "name": "envoy.cors"
+            },
+            {
+             "name": "envoy.fault"
+            },
+            {
+             "name": "envoy.router"
+            }
+           ],
+           "normalize_path": true,
+           "tracing": {
+            "client_sampling": {
+             "value": 100
+            },
+            "operation_name": "EGRESS",
+            "overall_sampling": {
+             "value": 100
+            },
+            "random_sampling": {
+             "value": 1
+            }
+           },
+           "stat_prefix": "0.0.0.0_7000",
+           "rds": {
+            "route_config_name": "7000",
+            "config_source": {
+             "initial_fetch_timeout": "0s",
+             "ads": {}
+            }
+           },
+           "use_remote_address": false,
+           "stream_idle_timeout": "0s",
+           "generate_request_id": true,
+           "upgrade_configs": [
+            {
+             "upgrade_type": "websocket"
+            }
+           ]
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.723Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "0.0.0.0_15010",
+      "address": {
+       "socket_address": {
+        "address": "0.0.0.0",
+        "port_value": 15010
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "envoy.http_connection_manager",
+          "config": {
+           "use_remote_address": false,
+           "rds": {
+            "route_config_name": "15010",
+            "config_source": {
+             "ads": {},
+             "initial_fetch_timeout": "0s"
+            }
+           },
+           "stat_prefix": "0.0.0.0_15010",
+           "generate_request_id": true,
+           "stream_idle_timeout": "0s",
+           "upgrade_configs": [
+            {
+             "upgrade_type": "websocket"
+            }
+           ],
+           "access_log": [],
+           "http_filters": [
+            {
+             "name": "mixer",
+             "config": {
+              "mixer_attributes": {
+               "attributes": {
+                "context.reporter.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                },
+                "context.reporter.kind": {
+                 "string_value": "outbound"
+                },
+                "source.namespace": {
+                 "string_value": "demo"
+                }
+               }
+              },
+              "forward_attributes": {
+               "attributes": {
+                "source.uid": {
+                 "string_value": "kubernetes://order-v1-746cd96696-7wggz.demo"
+                }
+               }
+              },
+              "transport": {
+               "check_cluster": "outbound|9091||istio-policy.istio-system.svc.cluster.local",
+               "network_fail_policy": {
+                "max_retry_wait": "1s",
+                "base_retry_wait": "0.080s",
+                "policy": "FAIL_CLOSE"
+               },
+               "report_cluster": "outbound|9091||istio-telemetry.istio-system.svc.cluster.local"
+              },
+              "service_configs": {
+               "default": {
+                "disable_check_calls": true
+               }
+              },
+              "default_destination_service": "default"
+             }
+            },
+            {
+             "name": "envoy.cors"
+            },
+            {
+             "name": "envoy.fault"
+            },
+            {
+             "name": "envoy.router"
+            }
+           ],
+           "normalize_path": true,
+           "tracing": {
+            "overall_sampling": {
+             "value": 100
+            },
+            "random_sampling": {
+             "value": 1
+            },
+            "client_sampling": {
+             "value": 100
+            },
+            "operation_name": "EGRESS"
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.724Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "172.21.0.25_15020",
+      "address": {
+       "socket_address": {
+        "address": "172.21.0.25",
+        "port_value": 15020
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "envoy.tcp_proxy",
+          "config": {
+           "stat_prefix": "inbound|15020|mgmt-15020|mgmtCluster",
+           "cluster": "inbound|15020|mgmt-15020|mgmtCluster"
+          }
+         }
+        ]
+       }
+      ],
+      "deprecated_v1": {
+       "bind_to_port": false
+      }
+     },
+     "last_updated": "2019-07-07T14:46:46.724Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "listener": {
+      "name": "virtual",
+      "address": {
+       "socket_address": {
+        "address": "0.0.0.0",
+        "port_value": 15001
+       }
+      },
+      "filter_chains": [
+       {
+        "filters": [
+         {
+          "name": "envoy.tcp_proxy",
+          "config": {
+           "stat_prefix": "PassthroughCluster",
+           "cluster": "PassthroughCluster"
+          }
+         }
+        ]
+       }
+      ],
+      "use_original_dst": true
+     },
+     "last_updated": "2019-07-07T14:46:46.724Z"
+    }
+   ]
+  },
+  {
+   "@type": "type.googleapis.com/envoy.admin.v2alpha.RoutesConfigDump",
+   "static_route_configs": [
+    {
+     "route_config": {
+      "name": "inbound|7000|http-o|order.demo.svc.cluster.local",
+      "virtual_hosts": [
+       {
+        "name": "inbound|http|7000",
+        "domains": [
+         "*"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "inbound|7000|http-o|order.demo.svc.cluster.local",
+           "timeout": "0s",
+           "max_grpc_timeout": "0s"
+          },
+          "decorator": {
+           "operation": "order.demo.svc.cluster.local:7000/*"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "disable_check_calls": true,
+            "mixer_attributes": {
+             "attributes": {
+              "destination.service.name": {
+               "string_value": "order"
+              },
+              "destination.service.namespace": {
+               "string_value": "demo"
+              },
+              "destination.service.host": {
+               "string_value": "order.demo.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://demo/services/order"
+              }
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "validate_clusters": false
+     },
+     "last_updated": "2019-07-07T14:46:46.717Z"
+    },
+    {
+     "route_config": {
+      "virtual_hosts": [
+       {
+        "name": "backend",
+        "domains": [
+         "*"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/stats/prometheus"
+          },
+          "route": {
+           "cluster": "prometheus_stats"
+          }
+         }
+        ]
+       }
+      ]
+     },
+     "last_updated": "2019-07-07T14:46:46.335Z"
+    },
+    {
+     "route_config": {
+      "name": "inbound|7000|http-o|order.demo.svc.cluster.local",
+      "virtual_hosts": [
+       {
+        "name": "inbound|http|7000",
+        "domains": [
+         "*"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "inbound|7000|http-o|order.demo.svc.cluster.local",
+           "timeout": "0s",
+           "max_grpc_timeout": "0s"
+          },
+          "decorator": {
+           "operation": "order.demo.svc.cluster.local:7000/*"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "disable_check_calls": true,
+            "mixer_attributes": {
+             "attributes": {
+              "destination.service.uid": {
+               "string_value": "istio://demo/services/order"
+              },
+              "destination.service.host": {
+               "string_value": "order.demo.svc.cluster.local"
+              },
+              "destination.service.name": {
+               "string_value": "order"
+              },
+              "destination.service.namespace": {
+               "string_value": "demo"
+              }
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "validate_clusters": false
+     },
+     "last_updated": "2019-07-07T14:46:46.716Z"
+    }
+   ],
+   "dynamic_route_configs": [
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "route_config": {
+      "name": "15010",
+      "virtual_hosts": [
+       {
+        "name": "istio-pilot.istio-system.svc.cluster.local:15010",
+        "domains": [
+         "istio-pilot.istio-system.svc.cluster.local",
+         "istio-pilot.istio-system.svc.cluster.local:15010",
+         "istio-pilot.istio-system",
+         "istio-pilot.istio-system:15010",
+         "istio-pilot.istio-system.svc.cluster",
+         "istio-pilot.istio-system.svc.cluster:15010",
+         "istio-pilot.istio-system.svc",
+         "istio-pilot.istio-system.svc:15010",
+         "172.21.255.227",
+         "172.21.255.227:15010"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "outbound|15010||istio-pilot.istio-system.svc.cluster.local",
+           "timeout": "0s",
+           "retry_policy": {
+            "retry_on": "connect-failure,refused-stream,unavailable,cancelled,resource-exhausted,retriable-status-codes",
+            "num_retries": 2,
+            "retry_host_predicate": [
+             {
+              "name": "envoy.retry_host_predicates.previous_hosts"
+             }
+            ],
+            "host_selection_retry_max_attempts": "5",
+            "retriable_status_codes": [
+             503
+            ]
+           },
+           "max_grpc_timeout": "0s"
+          },
+          "decorator": {
+           "operation": "istio-pilot.istio-system.svc.cluster.local:15010/*"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "forward_attributes": {
+             "attributes": {
+              "destination.service.uid": {
+               "string_value": "istio://istio-system/services/istio-pilot"
+              },
+              "destination.service.host": {
+               "string_value": "istio-pilot.istio-system.svc.cluster.local"
+              },
+              "destination.service.namespace": {
+               "string_value": "istio-system"
+              },
+              "destination.service.name": {
+               "string_value": "istio-pilot"
+              }
+             }
+            },
+            "mixer_attributes": {
+             "attributes": {
+              "destination.service.name": {
+               "string_value": "istio-pilot"
+              },
+              "destination.service.namespace": {
+               "string_value": "istio-system"
+              },
+              "destination.service.host": {
+               "string_value": "istio-pilot.istio-system.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://istio-system/services/istio-pilot"
+              }
+             }
+            },
+            "disable_check_calls": true
+           }
+          }
+         }
+        ]
+       },
+       {
+        "name": "allow_any",
+        "domains": [
+         "*"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "PassthroughCluster"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "forward_attributes": {
+             "attributes": {}
+            },
+            "mixer_attributes": {
+             "attributes": {}
+            },
+            "disable_check_calls": true
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "validate_clusters": false
+     },
+     "last_updated": "2019-07-07T14:46:46.728Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "route_config": {
+      "name": "7000",
+      "virtual_hosts": [
+       {
+        "name": "mall.demo.svc.cluster.local:7000",
+        "domains": [
+         "mall.demo.svc.cluster.local",
+         "mall.demo.svc.cluster.local:7000",
+         "mall",
+         "mall:7000",
+         "mall.demo.svc.cluster",
+         "mall.demo.svc.cluster:7000",
+         "mall.demo.svc",
+         "mall.demo.svc:7000",
+         "mall.demo",
+         "mall.demo:7000",
+         "172.21.255.162",
+         "172.21.255.162:7000"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "outbound|7000||mall.demo.svc.cluster.local",
+           "timeout": "0s",
+           "retry_policy": {
+            "retry_on": "connect-failure,refused-stream,unavailable,cancelled,resource-exhausted,retriable-status-codes",
+            "num_retries": 2,
+            "retry_host_predicate": [
+             {
+              "name": "envoy.retry_host_predicates.previous_hosts"
+             }
+            ],
+            "host_selection_retry_max_attempts": "5",
+            "retriable_status_codes": [
+             503
+            ]
+           },
+           "max_grpc_timeout": "0s"
+          },
+          "decorator": {
+           "operation": "mall.demo.svc.cluster.local:7000/*"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "forward_attributes": {
+             "attributes": {
+              "destination.service.host": {
+               "string_value": "mall.demo.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://demo/services/mall"
+              },
+              "destination.service.name": {
+               "string_value": "mall"
+              },
+              "destination.service.namespace": {
+               "string_value": "demo"
+              }
+             }
+            },
+            "mixer_attributes": {
+             "attributes": {
+              "destination.service.host": {
+               "string_value": "mall.demo.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://demo/services/mall"
+              },
+              "destination.service.namespace": {
+               "string_value": "demo"
+              },
+              "destination.service.name": {
+               "string_value": "mall"
+              }
+             }
+            },
+            "disable_check_calls": true
+           }
+          }
+         }
+        ]
+       },
+       {
+        "name": "order.demo.svc.cluster.local:7000",
+        "domains": [
+         "order.demo.svc.cluster.local",
+         "order.demo.svc.cluster.local:7000",
+         "order",
+         "order:7000",
+         "order.demo.svc.cluster",
+         "order.demo.svc.cluster:7000",
+         "order.demo.svc",
+         "order.demo.svc:7000",
+         "order.demo",
+         "order.demo:7000",
+         "172.21.255.203",
+         "172.21.255.203:7000"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "outbound|7000||order.demo.svc.cluster.local",
+           "timeout": "0s",
+           "retry_policy": {
+            "retry_on": "connect-failure,refused-stream,unavailable,cancelled,resource-exhausted,retriable-status-codes",
+            "num_retries": 2,
+            "retry_host_predicate": [
+             {
+              "name": "envoy.retry_host_predicates.previous_hosts"
+             }
+            ],
+            "host_selection_retry_max_attempts": "5",
+            "retriable_status_codes": [
+             503
+            ]
+           },
+           "max_grpc_timeout": "0s"
+          },
+          "decorator": {
+           "operation": "order.demo.svc.cluster.local:7000/*"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "disable_check_calls": true,
+            "forward_attributes": {
+             "attributes": {
+              "destination.service.host": {
+               "string_value": "order.demo.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://demo/services/order"
+              },
+              "destination.service.name": {
+               "string_value": "order"
+              },
+              "destination.service.namespace": {
+               "string_value": "demo"
+              }
+             }
+            },
+            "mixer_attributes": {
+             "attributes": {
+              "destination.service.host": {
+               "string_value": "order.demo.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://demo/services/order"
+              },
+              "destination.service.namespace": {
+               "string_value": "demo"
+              },
+              "destination.service.name": {
+               "string_value": "order"
+              }
+             }
+            }
+           }
+          }
+         }
+        ]
+       },
+       {
+        "name": "allow_any",
+        "domains": [
+         "*"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "PassthroughCluster"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "forward_attributes": {
+             "attributes": {}
+            },
+            "mixer_attributes": {
+             "attributes": {}
+            },
+            "disable_check_calls": true
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "validate_clusters": false
+     },
+     "last_updated": "2019-07-07T14:46:46.728Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "route_config": {
+      "name": "8080",
+      "virtual_hosts": [
+       {
+        "name": "istio-pilot.istio-system.svc.cluster.local:8080",
+        "domains": [
+         "istio-pilot.istio-system.svc.cluster.local",
+         "istio-pilot.istio-system.svc.cluster.local:8080",
+         "istio-pilot.istio-system",
+         "istio-pilot.istio-system:8080",
+         "istio-pilot.istio-system.svc.cluster",
+         "istio-pilot.istio-system.svc.cluster:8080",
+         "istio-pilot.istio-system.svc",
+         "istio-pilot.istio-system.svc:8080",
+         "172.21.255.227",
+         "172.21.255.227:8080"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "outbound|8080||istio-pilot.istio-system.svc.cluster.local",
+           "timeout": "0s",
+           "retry_policy": {
+            "retry_on": "connect-failure,refused-stream,unavailable,cancelled,resource-exhausted,retriable-status-codes",
+            "num_retries": 2,
+            "retry_host_predicate": [
+             {
+              "name": "envoy.retry_host_predicates.previous_hosts"
+             }
+            ],
+            "host_selection_retry_max_attempts": "5",
+            "retriable_status_codes": [
+             503
+            ]
+           },
+           "max_grpc_timeout": "0s"
+          },
+          "decorator": {
+           "operation": "istio-pilot.istio-system.svc.cluster.local:8080/*"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "forward_attributes": {
+             "attributes": {
+              "destination.service.namespace": {
+               "string_value": "istio-system"
+              },
+              "destination.service.name": {
+               "string_value": "istio-pilot"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://istio-system/services/istio-pilot"
+              },
+              "destination.service.host": {
+               "string_value": "istio-pilot.istio-system.svc.cluster.local"
+              }
+             }
+            },
+            "mixer_attributes": {
+             "attributes": {
+              "destination.service.host": {
+               "string_value": "istio-pilot.istio-system.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://istio-system/services/istio-pilot"
+              },
+              "destination.service.namespace": {
+               "string_value": "istio-system"
+              },
+              "destination.service.name": {
+               "string_value": "istio-pilot"
+              }
+             }
+            },
+            "disable_check_calls": true
+           }
+          }
+         }
+        ]
+       },
+       {
+        "name": "allow_any",
+        "domains": [
+         "*"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "PassthroughCluster"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "mixer_attributes": {
+             "attributes": {}
+            },
+            "disable_check_calls": true,
+            "forward_attributes": {
+             "attributes": {}
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "validate_clusters": false
+     },
+     "last_updated": "2019-07-07T14:46:46.728Z"
+    },
+    {
+     "version_info": "2019-07-07T14:46:42Z/33",
+     "route_config": {
+      "name": "15014",
+      "virtual_hosts": [
+       {
+        "name": "istio-pilot.istio-system.svc.cluster.local:15014",
+        "domains": [
+         "istio-pilot.istio-system.svc.cluster.local",
+         "istio-pilot.istio-system.svc.cluster.local:15014",
+         "istio-pilot.istio-system",
+         "istio-pilot.istio-system:15014",
+         "istio-pilot.istio-system.svc.cluster",
+         "istio-pilot.istio-system.svc.cluster:15014",
+         "istio-pilot.istio-system.svc",
+         "istio-pilot.istio-system.svc:15014",
+         "172.21.255.227",
+         "172.21.255.227:15014"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "outbound|15014||istio-pilot.istio-system.svc.cluster.local",
+           "timeout": "0s",
+           "retry_policy": {
+            "retry_on": "connect-failure,refused-stream,unavailable,cancelled,resource-exhausted,retriable-status-codes",
+            "num_retries": 2,
+            "retry_host_predicate": [
+             {
+              "name": "envoy.retry_host_predicates.previous_hosts"
+             }
+            ],
+            "host_selection_retry_max_attempts": "5",
+            "retriable_status_codes": [
+             503
+            ]
+           },
+           "max_grpc_timeout": "0s"
+          },
+          "decorator": {
+           "operation": "istio-pilot.istio-system.svc.cluster.local:15014/*"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "forward_attributes": {
+             "attributes": {
+              "destination.service.uid": {
+               "string_value": "istio://istio-system/services/istio-pilot"
+              },
+              "destination.service.host": {
+               "string_value": "istio-pilot.istio-system.svc.cluster.local"
+              },
+              "destination.service.namespace": {
+               "string_value": "istio-system"
+              },
+              "destination.service.name": {
+               "string_value": "istio-pilot"
+              }
+             }
+            },
+            "mixer_attributes": {
+             "attributes": {
+              "destination.service.host": {
+               "string_value": "istio-pilot.istio-system.svc.cluster.local"
+              },
+              "destination.service.uid": {
+               "string_value": "istio://istio-system/services/istio-pilot"
+              },
+              "destination.service.name": {
+               "string_value": "istio-pilot"
+              },
+              "destination.service.namespace": {
+               "string_value": "istio-system"
+              }
+             }
+            },
+            "disable_check_calls": true
+           }
+          }
+         }
+        ]
+       },
+       {
+        "name": "allow_any",
+        "domains": [
+         "*"
+        ],
+        "routes": [
+         {
+          "match": {
+           "prefix": "/"
+          },
+          "route": {
+           "cluster": "PassthroughCluster"
+          },
+          "per_filter_config": {
+           "mixer": {
+            "disable_check_calls": true,
+            "forward_attributes": {
+             "attributes": {}
+            },
+            "mixer_attributes": {
+             "attributes": {}
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "validate_clusters": false
+     },
+     "last_updated": "2019-07-07T14:46:46.728Z"
+    }
+   ]
+  }
+ ]
+}
